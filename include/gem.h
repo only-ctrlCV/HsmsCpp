@@ -226,7 +226,14 @@ public:
 	CGem();
 	virtual ~CGem();
 
-	static std::shared_ptr<CGem> GetInstancePtr();
+	enum class LinkMode
+	{
+		SECS_I,
+		HSMS_SS,
+		HSMS_MS,
+	};
+
+	static std::shared_ptr<CGem> GetInstancePtr(LinkMode mode);
 
 public:
 	virtual int InitLink(const HsmsSet& set) = 0;
@@ -241,6 +248,9 @@ public:
 	virtual int SetSecsRecvFun(funSecsMessageRecv fun) = 0;
 	virtual int SetConnChange(funConnChage) = 0;
 	virtual int GetChangeState() = 0;
+
+
+	virtual void SetSmlLog(int nDay) = 0;
 };
 
 using GemPtr = std::shared_ptr<CGem>;

@@ -8,7 +8,7 @@ using namespace std;
 
 CHsmsEquipment::CHsmsEquipment()
 {
-	m_pGem = CGem::GetInstancePtr();
+	m_pGem = CGem::GetInstancePtr(CGem::LinkMode::HSMS_SS);
 }
 
 CHsmsEquipment::~CHsmsEquipment()
@@ -33,6 +33,7 @@ int CHsmsEquipment::Start()
 	sset.uDevID = 1;
 	sset.mode = CSECS_EQUIP;
 
+	m_pGem->SetSmlLog(7);
 	m_pGem->InitLink(set);
 
 	m_pGem->SetSecsRecvFun([this](const SecsMessage& msg) {
@@ -71,6 +72,9 @@ int CHsmsEquipment::handleMessage(const SecsMessage& msg)
 
 		std::thread t([this]() 
 			{
+				SecsMessage smsgHello { 1, 1, nullptr };
+				m_pGem->Send(smsgHello);
+
 				std::this_thread::sleep_for(std::chrono::seconds(1));
 				ItemPtr iSend = Item::L();
 				iSend->Append(Item::B(6));
@@ -97,6 +101,13 @@ int CHsmsEquipment::handleMessage(const SecsMessage& msg)
 	}
 		break;
 	default:
+	{
+		if (msg.F % 2 != 0)
+		{
+			SecsMessage rmsg{ msg.S, (byte)(msg.F + 1), Item::L(), msg.MID };
+			m_pGem->Reply(rmsg);
+		}
+	}
 		break;
 	}
 
