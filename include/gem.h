@@ -144,6 +144,7 @@ struct SecsSet
 	SECSMODE mode;
 	ushort uBaudrate;
 	std::string sComName;
+	bool bIgnoreDevID;
 };
 
 HSMS_API u2 SF(byte uS, byte uF);
