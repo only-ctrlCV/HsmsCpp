@@ -4,8 +4,6 @@
 
 using namespace std;
 
-
-
 CHsmsEquipment::CHsmsEquipment()
 {
 	m_pGem = CGem::GetInstancePtr(CGem::LinkMode::HSMS_SS);
@@ -33,17 +31,15 @@ int CHsmsEquipment::Start()
 	sset.uDevID = 1;
 	sset.mode = CSECS_EQUIP;
 
-	m_pGem->SetSmlLog(7);
+	m_pGem->SetSmlLog("../log", 7);
 	m_pGem->InitLink(set);
 
-	m_pGem->SetSecsRecvFun([this](const SecsMessage& msg) {
-		return handleMessage(msg);
+	m_pGem->SetSecsRecvFun([this](const SecsMessage& msg)
+		{
+			return handleMessage(msg);
 		});
 
 	m_pGem->Connect();
-
-
-	
 
 	return 0;
 }
@@ -67,12 +63,12 @@ int CHsmsEquipment::handleMessage(const SecsMessage& msg)
 		item->Append(Item::A("DemoEquip"));
 		item->Append(Item::A("Rev 1.0"));
 
-		SecsMessage rmsg{1, 2, item, msg.MID};
+		SecsMessage rmsg{ 1, 2, item, msg.MID };
 		m_pGem->Reply(rmsg);
 
-		std::thread t([this]() 
+		std::thread t([this]()
 			{
-				SecsMessage smsgHello { 1, 1, nullptr };
+				SecsMessage smsgHello{ 1, 1, nullptr };
 				m_pGem->Send(smsgHello);
 
 				std::this_thread::sleep_for(std::chrono::seconds(1));
@@ -87,8 +83,8 @@ int CHsmsEquipment::handleMessage(const SecsMessage& msg)
 			});
 		t.detach();
 	}
-		break;
-	case 1<<8|3:
+	break;
+	case 1 << 8 | 3:
 	{
 		ItemPtr item = Item::L();
 		for (int i = 0; i < 1000; i++)
@@ -99,7 +95,7 @@ int CHsmsEquipment::handleMessage(const SecsMessage& msg)
 		SecsMessage rmsg{ 1, 4, item, msg.MID };
 		m_pGem->Reply(rmsg);
 	}
-		break;
+	break;
 	default:
 	{
 		if (msg.F % 2 != 0)
@@ -108,7 +104,7 @@ int CHsmsEquipment::handleMessage(const SecsMessage& msg)
 			m_pGem->Reply(rmsg);
 		}
 	}
-		break;
+	break;
 	}
 
 	string sml = Item::GetSML(msg.item);

@@ -9,7 +9,7 @@
 #else
 #define HSMS_API __declspec(dllimport)
 
-#if _WIN64  
+#if _WIN64
 #pragma comment(lib, "hsms.lib")
 #else
 #ifdef _DEBUG
@@ -19,11 +19,9 @@
 #endif
 #endif
 
-
-
 #endif
 
-//#define  HSMS_API 
+//#define  HSMS_API
 
 #pragma once
 //#pragma comment(lib, "hsms.lib")
@@ -75,8 +73,6 @@ typedef bool					sboolean;
 
 #endif // WIN32
 
-
-
 using VEC = std::vector<byte>;
 
 enum class SecsFormat
@@ -120,13 +116,13 @@ enum HSMSMSGTYPE
 
 struct HsmsSet
 {
-	unsigned short uDevID;
-	int nT3;
-	int nT5;
-	int nT6;
-	int nT7;
-	int nT8;
-	HSMSMODE mode;
+	unsigned short uDevID = 1;
+	int nT3 = 45;
+	int nT5 = 10;
+	int nT6 = 5;
+	int nT7 = 10;
+	int nT8 = 5;
+	HSMSMODE mode = CHSMS_PASSIVE;
 	unsigned short uLocalPort;
 	unsigned short uRemotePort;
 	std::string cLocalIP;
@@ -151,6 +147,7 @@ HSMS_API u2 SF(byte uS, byte uF);
 
 class Item;
 using ItemPtr = std::shared_ptr<Item>;
+using VecItem = std::vector<ItemPtr>;
 class  HSMS_API Item
 {
 public:
@@ -167,7 +164,7 @@ public:
 	static ItemPtr I8(i8 data);
 	static ItemPtr F4(f4 data);
 	static ItemPtr F8(f8 data);
-	
+
 	static ItemPtr A(const std::string& str);
 	static ItemPtr L(const std::vector<ItemPtr>& vData);
 	static ItemPtr B(const VEC& Bin);
@@ -190,17 +187,19 @@ public:
 	virtual ItemPtr getItem(int nIndex) const = 0;
 	virtual std::vector<ItemPtr> GetList() const = 0;
 	virtual VEC& getValueBytes() = 0;
-	
+
 	static std::string GetSML(const ItemPtr& pItem);
 
 	virtual std::string getString() const = 0;
-	
+
 	template<typename T>
 	T getValue() const;
 
 	template<typename T>
 	std::vector<T> getValueList() const;
 };
+
+using vecU4 = std::vector<u4>;
 
 struct HSMS_API SecsMessage
 {
@@ -220,6 +219,7 @@ struct HSMS_API SecsMessage
 
 using funSecsMessageRecv = std::function<int(const SecsMessage& msg)>;
 using funConnChage = std::function<void(int)>;
+using funTimeOut = std::function<void(int, int)>;
 
 class HSMS_API CGem
 {
@@ -249,9 +249,9 @@ public:
 	virtual int SetSecsRecvFun(funSecsMessageRecv fun) = 0;
 	virtual int SetConnChange(funConnChage) = 0;
 	virtual int GetChangeState() = 0;
+	virtual int SetTimeOut(funTimeOut) = 0;
 
-
-	virtual void SetSmlLog(int nDay) = 0;
+	virtual void SetSmlLog(const std::string& path, int nDay) = 0;
 };
 
 using GemPtr = std::shared_ptr<CGem>;
