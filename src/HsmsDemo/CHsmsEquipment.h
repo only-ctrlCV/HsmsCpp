@@ -2,7 +2,6 @@
 #include "windows.h"
 #include "../../include/gem.h"
 
-
 class CHsmsEquipment
 {
 public:
@@ -15,8 +14,8 @@ public:
 
 private:
 	int handleMessage(const SecsMessage& msg);
+	int ItemTest();
 
 private:
 	GemPtr m_pGem;
 };
-

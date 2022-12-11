@@ -180,10 +180,13 @@ public:
 	static ItemPtr F4(const std::vector<f4>& vData);
 	static ItemPtr F8(const std::vector<f8>& vData);
 
+	static ItemPtr fromStream(const VEC& vData, int nIndex);
+
 	virtual void Append(const ItemPtr& it) = 0;
 
 	virtual SecsFormat getFormat() const = 0;
 	virtual size_t getCount() const = 0;
+	virtual size_t getItemCount() const = 0;
 	virtual ItemPtr getItem(int nIndex) const = 0;
 	virtual std::vector<ItemPtr> GetList() const = 0;
 	virtual VEC& getValueBytes() = 0;
@@ -191,6 +194,7 @@ public:
 	static std::string GetSML(const ItemPtr& pItem);
 
 	virtual std::string getString() const = 0;
+	virtual VEC getStream() = 0;
 
 	template<typename T>
 	T getValue() const;

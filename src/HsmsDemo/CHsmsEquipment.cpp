@@ -41,6 +41,8 @@ int CHsmsEquipment::Start()
 
 	m_pGem->Connect();
 
+	ItemTest();
+
 	return 0;
 }
 
@@ -110,6 +112,15 @@ int CHsmsEquipment::handleMessage(const SecsMessage& msg)
 	string sml = Item::GetSML(msg.item);
 	cout << "recv" << "S" << (int)msg.S << "F" << (int)msg.F << " MID" << msg.MID << endl;
 	cout << sml.c_str() << endl;
+
+	return 0;
+}
+
+int CHsmsEquipment::ItemTest()
+{
+	auto item = Item::U4(vector<u4>{2, 3, 4});
+	auto count = item->getCount();
+	auto itemcount = item->getItemCount();
 
 	return 0;
 }
